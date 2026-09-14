@@ -1,0 +1,11 @@
+import {mkdir,copyFile,readFile,writeFile} from 'node:fs/promises';
+const root = new URL('.', import.meta.url);
+const output = new URL('dist/', root);
+const files=['index.html','odyssey.css','config.js','cesar-save.js','gift-roster.js','core.js','world-data.js','art.js','adventure.js'];
+const fixture=await readFile(new URL('cesar-save.js',root),'utf8');
+if(!/^\s*(?:\/\/[^\n]*\n)*window\.CESAR_FIXTURE\s*=\s*null;?\s*$/.test(fixture))throw Error('Public builds must not contain a personal save.');
+await mkdir(new URL('assets/',output),{recursive:true});
+for(const file of files)await copyFile(new URL(file,root),new URL(file,output));
+await copyFile(new URL('ashford.png',root),new URL('assets/ashford.png',output));
+await writeFile(new URL('404.html',output),'<!doctype html><title>Mutant Odyssey</title><p>This page is not available. <a href="/">Return to Mutant Odyssey</a>.</p>');
+console.log('Public game built: 10 approved game assets, no personal save or private archives.');
