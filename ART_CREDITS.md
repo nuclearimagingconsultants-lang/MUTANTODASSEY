@@ -1,6 +1,10 @@
 # Art and attribution
 
-`assets/ashford.png` is original AI-generated environment scenery made with the built-in image-generation tool. It is used for the title screen and battle backdrop. Characters, creature silhouettes, city geometry, and effects are original code-rendered assets in `art.js` and `adventure.js`. No Final Fantasy art, music, characters, or logo is included. The project takes inspiration from the readable party-command structure of classic JRPGs.
+`assets/ashford.png` is the earlier original AI-generated environment. `assets/ashford-hd.png` is the new title/battle backdrop. Both were created with the built-in image-generation tool. Character rigs, creature silhouettes, city geometry and effects are code-rendered. No official Final Fantasy, X-Men or Roku image, music or logo is included. Newly written crossover dialogue names fictional characters and locations; this is an unofficial fan project, not affiliated with their owners.
+
+## HD environment prompt
+
+Use case: stylized-concept. Asset type: high-resolution widescreen game battle environment / title background for original Mutant Odyssey. Create a richly detailed cinematic nighttime Ashford city inspired by the whimsical purple-and-pink atmosphere of Roku City, but entirely original architecture and no logos or recognizable copyrighted characters. Elegant stepped art-deco skyscrapers, copper observatory domes, clock tower, luminous theater, narrow glowing windows, tiny rooftop gardens, warm amber lights contrasting violet and cyan. Physically believable stone, glass, wet reflections, atmospheric depth, crisp premium game environment rendering. Ground-level wide battle arena composition: empty broad paved plaza occupies bottom 40 percent, usable to overlay animated fighters; buildings and skyline fill upper 60 percent with deep perspective, unobstructed central foreground. No people, no text, no watermarks, no interface. Wide landscape 16:9, polished HD.
 
 ## Final environment prompt
 
