@@ -30,3 +30,22 @@
  C.missionFor=(s)=>C.expandedActs[Math.min(s.odyssey.act,23)][Math.min(s.odyssey.episode||0,2)];
  C.completeMission=s=>{const o=s.odyssey;o.missionWins??=[];o.missionWins.push(o.act+':'+(o.episode||0));o.episode=(o.episode||0)+1;if(o.episode>=3){o.chapterWins.push(o.act);o.act++;o.episode=0}o.stage=0;};
 })(OdysseyCore);
+
+/* Long-form field assignments: progress lives only in the additive odyssey namespace. */
+(function(C){
+ const baseMission=C.missionFor,finishMission=C.completeMission;
+ C.assignmentSteps=(s)=>{const a=baseMission(s),region=a.zone;return[
+  {label:'Campus briefing',zone:'helix',x:1600,y:800,speaker:a.speaker,line:a.line+' Meet the team in the archive. We need evidence, a safe route and a plan for getting everyone home.',action:'talk'},
+  {label:'Interview a witness',zone:region,x:800,y:1200,speaker:'A displaced resident',line:'The patrol arrived before dawn. They took the main road, but a service route is still open. My neighbors will not leave without knowing someone is protecting the crossing.',action:'choice',choices:['Promise to protect the evacuation','Ask for the patrol route first']},
+  {label:'Investigate the relay',zone:region,x:2000,y:800,speaker:'Juno Park',line:'The relay holds two records: an evacuation timetable and an altered security order. The order names '+a.enemy+'. Which lead should we prioritize?',action:'choice',choices:['Copy the evacuation timetable','Preserve the security order']},
+  {label:'Clear the crossing',zone:region,x:2400,y:1200,speaker:a.speaker,line:'The advance guard has blocked the crossing. Break their formation so the civilians can reach shelter.',action:'battle',enemy:a.enemy+' · Advance Guard',kind:a.kind},
+  {label:'Check the shelter',zone:region,x:1200,y:2000,speaker:'Goldie',line:'The first families are safe. One student is still shaking: they used their gift for the first time today. Stay a moment. Being rescued should not feel like being examined.',action:'choice',choices:['Sit beside the student and listen','Help the medics prepare the next convoy']},
+  {label:'Prepare the final approach',zone:region,x:2000,y:1600,speaker:a.speaker,line:'We have the evidence and a clear way out. '+a.enemy+' is still holding the last approach. Check your supplies before we go. Your earlier decisions will be recorded in the debrief.',action:'talk'},
+  {label:'Confront '+a.enemy,zone:region,x:2400,y:2000,speaker:a.speaker,line:a.task+' Keep the evacuation route clear and bring your companions home. The report is not finished until everyone returns to Helix.',action:'battle',enemy:a.enemy,kind:a.kind},
+  {label:'Return to the Institute',zone:'helix',x:1600,y:800,speaker:a.speaker,line:'Everyone who came back has a different account of today. We keep all of them. File the evidence, talk through your decisions, and take the evening off before the next assignment.',action:'debrief'}
+ ]};
+ C.assignmentIndex=s=>Math.min(7,Math.max(0,s.odyssey.assignmentStep||0));
+ C.missionFor=s=>{const base=baseMission(s),steps=C.assignmentSteps(s),index=C.assignmentIndex(s),step=steps[index];return{...base,...step,title:base.title,baseZone:base.zone,stepIndex:index,stepCount:steps.length,task:step.label,enemy:step.enemy||base.enemy,kind:step.kind||base.kind}};
+ C.advanceAssignment=(s,choice)=>{if(s.odyssey.act>=24)return false;const a=C.missionFor(s),o=s.odyssey;o.assignmentLog??=[];o.assignmentLog.push({act:o.act,episode:o.episode||0,step:a.stepIndex,label:a.label,choice:choice||null});if(a.action==='debrief'){finishMission(s);o.assignmentStep=0;return true}o.assignmentStep=a.stepIndex+1;o.stage=0;return false};
+ C.completeMission=s=>{if(C.missionFor(s).action!=='battle')return false;return C.advanceAssignment(s)};
+})(OdysseyCore);
