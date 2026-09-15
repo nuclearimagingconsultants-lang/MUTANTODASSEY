@@ -63,3 +63,66 @@
  };
  root.CityHD={drawWorld,drawMap,streetRoute,streetAt,mapBounds,symbols,styles};
 })(window);
+
+// Walkable Institute interior. Geometry is shared by rendering, navigation and collision.
+(function(root){'use strict';
+ const D=root.OdysseyWorld,H=root.CityHD,A=root.OdysseyArt,C=root.OdysseyCore;
+ const rooms=[
+ {name:'Entrance Hall',x:1320,y:1800,w:560,h:760},
+ {name:'Great Hall',x:400,y:1450,w:850,h:550},
+ {name:'Student Dormitory',x:1950,y:1450,w:850,h:550},
+ {name:'Library',x:400,y:650,w:850,h:550},
+ {name:'Gift Classroom',x:1950,y:650,w:850,h:550},
+ {name:'Danger Room',x:1250,y:200,w:700,h:400},
+ {name:'Gallery',x:1400,y:500,w:400,h:1450},
+ {name:'North Cloister',x:1100,y:850,w:1000,h:180},
+ {name:'South Cloister',x:1100,y:1650,w:1000,h:180}];
+ const contains=(r,x,y)=>x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h;
+ const floor=(x,y)=>rooms.some(r=>contains(r,x,y));
+ const walkable=(x,y)=>[[0,0],[-14,-14],[14,-14],[-14,14],[14,14]].every(([dx,dy])=>floor(x+dx,y+dy));
+ D.zones.institute={name:'Institute Castle',subtitle:'A home for the gifted',color:'#d4bbec',ground:'#191c30',w:3200,h:2800};
+ D.places.institute=[
+ {id:'exit',name:'Exit to campus',x:1600,y:2400,type:'travel',to:'helix',toId:'castle'},
+ {id:'commons',name:'Great Hall · companions',x:800,y:1730,type:'rest',campus:true},
+ {id:'dorm',name:'Your dorm · rest',x:2350,y:1730,type:'rest',campus:true},
+ {id:'library',name:'Library · field journal',x:800,y:930,type:'job',library:true},
+ {id:'classroom',name:'Gift Control · attend class',x:2350,y:930,type:'rest',campus:true},
+ {id:'interior-danger',name:'Danger Room',x:1600,y:400,type:'training'}];
+ D.places.helix.push({id:'castle',name:'Enter Institute Castle',x:1600,y:600,type:'travel',to:'institute',toId:'exit'});
+ const oldPass=D.passable,oldSafe=D.safePosition,oldBuildings=D.buildings;
+ D.passable=(x,y,z)=>z==='institute'?walkable(x,y):oldPass(x,y,z);
+ D.safePosition=(x,y,z)=>z==='institute'?(walkable(x,y)?{x,y}:{x:1600,y:2250}):oldSafe(x,y,z);
+ D.buildings=z=>z==='institute'?[]:oldBuildings(z);
+ // All destination centers join the central gallery through the two cloisters.
+ function route(from,to){const path=[from];if(from.x<1400||from.x>1800)path.push({x:from.x,y:from.y<1300?940:1740});const source=path[path.length-1];path.push({x:1600,y:source.y});const row=to.x<1400||to.x>1800?(to.y<1300?940:1740):to.y;path.push({x:1600,y:row},{x:to.x,y:row},to);return path;}
+ const oldRoute=H.streetRoute;H.streetRoute=(z,a,b)=>z==='institute'?route(a,b):oldRoute(z,a,b);
+ const roomAt=p=>rooms.find(r=>contains(r,p.x,p.y))?.name||'Gallery';
+ const oldWorld=H.drawWorld;
+ H.drawWorld=function(c,o){if(o.zone!=='institute')return oldWorld(c,o);const {view,cam,player,time,places,party,trail,heroName,goal}=o,scale=view.w<800?.70:.9;
+ c.fillStyle='#101626';c.fillRect(0,0,view.w,view.h);c.save();c.translate(view.w*.5-cam.x*scale,view.h*.58-cam.y*scale);c.scale(scale,scale);
+ for(const r of rooms){c.fillStyle='#61536e';c.fillRect(r.x-12,r.y-12,r.w+24,r.h+24)}
+ for(const r of rooms){c.fillStyle='#303149';c.fillRect(r.x,r.y,r.w,r.h)}
+ // Stone tiles stop at the same boundaries as movement.
+ c.strokeStyle='#aba0b51c';c.lineWidth=1;for(let y=220;y<2560;y+=50)for(let x=410;x<2800;x+=50)if(floor(x,y)&&floor(x+45,y+45))c.strokeRect(x,y,45,45);
+ for(const r of rooms.slice(0,6)){A.text(c,r.name.toUpperCase(),r.x+r.w/2,r.y+48,'#f1d69f',21);for(let x=r.x+70;x<r.x+r.w;x+=150){A.glow(c,x,r.y+100,75,'#ffbf6633');A.ellipse(c,x,r.y+68,5,9+Math.sin(time*4+x)*2,'#ffe4a6')} }
+ // Furnishings sit at room edges, leaving the center routes unobstructed.
+ for(const r of rooms.slice(1,5))for(let i=0;i<5;i++){const x=r.x+60+i*145,y=r.y+120;
+ c.fillStyle='#10131d77';c.fillRect(x+7,y+9,100,65);
+ c.fillStyle=r.name==='Library'?'#906344':'#795879';c.fillRect(x,y,95,50);c.fillStyle='#e1be82';c.fillRect(x+5,y+5,85,5);
+ if(r.name==='Student Dormitory'){c.fillStyle='#a4b7d7';c.fillRect(x+6,y+12,83,62);c.fillStyle='#eaded0';c.fillRect(x+12,y+13,70,18);c.fillStyle='#4e658e';c.fillRect(x+6,y+38,83,36);c.strokeStyle='#c8ad80';c.strokeRect(x+6,y+12,83,62)}
+ if(r.name==='Library')for(let j=0;j<9;j++){c.fillStyle=['#bac9db','#b591b8','#e9b874'][j%3];c.fillRect(x+8+j*9,y+15,6,28)}
+ if(r.name==='Gift Classroom'){c.fillStyle='#e6ddc7';c.fillRect(x+20,y+18,34,21);A.line(c,[[x+37,y+18],[x+37,y+39]],'#938976',1);A.ellipse(c,x+73,y+29,9,9,'#9ce2d2')}
+ if(r.name==='Great Hall'){A.ellipse(c,x+24,y+28,13,8,'#d3d5de');A.ellipse(c,x+70,y+28,13,8,'#d3d5de');c.fillStyle='#e5b877';c.fillRect(x+45,y+14,5,15)}
+ }
+ // Arched windows, banners and inlaid carpets create a readable castle atmosphere.
+ for(const r of rooms.slice(0,6)){for(const side of [-1,1]){const x=side<0?r.x+26:r.x+r.w-55,y=r.y+210;c.fillStyle='#18203c';c.beginPath();c.roundRect(x,y,30,100,[15,15,0,0]);c.fill();c.strokeStyle='#bda787';c.lineWidth=3;c.stroke();A.line(c,[[x+15,y+6],[x+15,y+96]],'#83b6d7',3);A.line(c,[[x+3,y+42],[x+27,y+42]],'#83b6d7',3);A.glow(c,x+15,y+50,65,'#8bbbe022')}
+ const cx=r.x+r.w/2;c.fillStyle='#6c426277';c.fillRect(cx-70,r.y+130,140,Math.max(60,r.h-250));c.strokeStyle='#bda06d66';c.strokeRect(cx-62,r.y+138,124,Math.max(44,r.h-266));
+ A.path(c,[[cx-140,r.y+65],[cx-100,r.y+65],[cx-100,r.y+140],[cx-120,r.y+158],[cx-140,r.y+140]],'#535c8c','#c3ab82');A.text(c,'X',cx-120,r.y+121,'#e8d49c',25);
+ }
+ for(let i=0;i<8;i++){const x=1450+(i%2)*290,y=700+Math.floor(i/2)*300;A.human(c,x,y+Math.sin(time+i)*15,.4,{time,walk:.2,color:i%2?'#a4bde0':'#c99ac6'});}
+ if(goal){c.setLineDash([9,10]);A.line(c,route(player,goal).map(p=>[p.x,p.y]),'#e8cb8877',3);c.setLineDash([])}
+ for(const p of places)A.token(c,p,time);
+ party.forEach((id,i)=>{const p=trail[Math.min(trail.length-1,(i+1)*10)]||player;A.human(c,p.x,p.y,.48,{...C.allies[id],time,walk:player.walk,face:player.face})});A.human(c,player.x,player.y,.48,{time,walk:player.walk,face:player.face,color:'#ffce8c',skin:'#ad7859'});A.text(c,heroName,player.x,player.y+24,'#ffe4a8',12);c.restore();};
+ const oldMap=H.drawMap;H.drawMap=function(c,o){if(o.zone!=='institute')return oldMap(c,o);const {w,h,player,target,places}=o,bounds=H.mapBounds('institute',player,'region',w,h),project=p=>({x:(p.x-bounds.x)*w/bounds.w,y:(p.y-bounds.y)*h/bounds.h});c.fillStyle='#141b2c';c.fillRect(0,0,w,h);for(const r of rooms){const p=project(r);c.fillStyle='#706180';c.fillRect(p.x,p.y,r.w*w/bounds.w,r.h*h/bounds.h)}if(target)A.line(c,route(player,target).map(p=>{const q=project(p);return[q.x,q.y]}),'#ffe2a1',2);const pins=places.map(p=>{const q=project(p);A.ellipse(c,q.x,q.y,4,4,D.colors[p.type]);A.text(c,p.id==='interior-danger'?'TRAIN':p.id.toUpperCase(),q.x,q.y-7,'#f0e4cf',8);return{...p,px:q.x,py:q.y}});const p=project(player);A.ellipse(c,p.x,p.y,4,4,'#fff');A.text(c,'N ↑ · INSTITUTE FLOOR PLAN',w/2,13,'#f0e4cf',9);return{bounds,pins,street:roomAt(player),distance:target?Math.round(Math.hypot(target.x-player.x,target.y-player.y)):0};};
+ root.InstituteLayout={rooms,route,roomAt};
+})(window);
