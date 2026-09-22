@@ -1,7 +1,7 @@
 import {mkdir,copyFile,readFile,writeFile} from 'node:fs/promises';
 const root = new URL('.', import.meta.url);
 const output = new URL('dist/', root);
-const files=['index.html','odyssey.css','config.js','cesar-save.js','gift-roster.js','core.js','equipment.js','world-data.js','art.js','city-hd.js','battle-hd.js','crowd-hd.js','campaign-data.js','adventure.js'];
+const files=['index.html','odyssey.css','config.js','cesar-save.js','gift-roster.js','core.js','equipment.js','world-data.js','art.js','city-hd.js','battle-hd.js','crowd-hd.js','campaign-data.js','progression.js','rpg-items.js','rpg-story.js','adventure.js'];
 const fixture=await readFile(new URL('cesar-save.js',root),'utf8');
 if(!/^\s*(?:\/\/[^\n]*\n)*window\.CESAR_FIXTURE\s*=\s*null;?\s*$/.test(fixture))throw Error('Public builds must not contain a personal save.');
 await mkdir(new URL('assets/',output),{recursive:true});
