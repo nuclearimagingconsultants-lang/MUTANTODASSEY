@@ -1,6 +1,14 @@
 # Art and attribution
 
-`assets/ashford.png` is the earlier original AI-generated environment. `assets/ashford-hd.png` is the new title/battle backdrop. Both were created with the built-in image-generation tool. Character rigs, creature silhouettes, city geometry and effects are code-rendered. No official Final Fantasy, X-Men or Roku image, music or logo is included. Newly written crossover dialogue names fictional characters and locations; this is an unofficial fan project, not affiliated with their owners.
+## HD monster integration
+
+The built-in image tool generated `assets/sentinel-hd.png`, `assets/cast-hd.png` and `assets/bestiary-hd.png`. These are painted 2D illustrations with transparent alpha, not 3D models or skeletal animations. Runtime crops the atlases without altering their pixels, adding movement, impact flashes and health bars. Map emblems distinguish robots, stags, hounds, mantises, volcanic creatures, tree regents and ice hosts.
+
+Production artwork brief: high-definition painted 2D comic/fantasy enemy art; a purple/magenta Sentinel robot with glowing energy palm, crystalline Glass Stag, volcanic Ashbound Hulk, bark Root Hound, Spore Mantis, Rootclaim Regent and Glacier Host; crisp material detail, full-body silhouettes, no 3D rendering. Sentinel uses the approved transparent variant. The six-creature atlas uses a three-column, two-row transparent layout; the cast atlas uses four columns and two rows. Both atlases are 1536 by 1024 pixels.
+
+Cast generation brief: original full-body painted comic/JRPG cast, genuine transparent background, evenly spaced cells, no labels or interface. Cesar: tan skin, short dark curls, charcoal jacket with gold seams, orange fists. Goldie: brown skin, golden bob, ivory/gold cape. Juno: Korean young man, glasses, long cyan technology coat. Yara: dark brown skin, long braids, green/bronze woodland armor. Oren: older Black mentor, silver hair, burgundy coat. Street rogue: lean purple hood and scarf. Bruiser: stocky bald fighter, navy vest and wraps. Compact officer: silver-haired woman, crimson/black armored coat. Named human opponents share these archetypes; they do not each have a bespoke portrait.
+
+`assets/ashford.png` is the earlier original AI-generated environment. `assets/ashford-hd.png` is the title/battle backdrop. Both were created with the built-in image-generation tool. City geometry, effects and image-loading fallbacks are code-rendered. No official Final Fantasy, X-Men or Roku image, music or logo is included. Newly written crossover dialogue names fictional characters and locations; this is an unofficial fan project, not affiliated with their owners.
 
 ## HD environment prompt
 
