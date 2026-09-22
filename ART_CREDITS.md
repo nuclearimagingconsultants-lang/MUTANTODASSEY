@@ -1,5 +1,13 @@
 # Art and attribution
 
+## Distinct civilian and student cast
+
+`assets/civilians-hd.png` contains 32 individual full-body resident designs in an 8×4 grid. `assets/students-hd.png` contains eight individually designed Institute students in a 4×2 grid. Both are transparent 1536×1024 images generated with the built-in image tool. Stable per-person indices prevent changing identities during movement. Neither atlas uses the party's artwork. Civilian designs repeat across regions, not within a region's 32-person ambient population. Companions actively following the hero no longer also stand at their recruitment location.
+
+Civilian prompt brief: painted HD 2D comic/JRPG realism; genuine transparent alpha; exactly 32 different adults evenly arranged in 8 columns and 4 rows, full bodies and feet within separate cells; varied ages, skin tones, faces, hair, builds, ordinary clothing and accessories. Row 1: plum-cardigan elder, orange-overall mechanic, red-raincoat woman, lime-hoodie man, navy-suit elder, pink-bomber courier, turbaned cream-tunic man, teal-apron woman. Row 2: white-apron chef, blue-pantsuit woman, striped-sweater redhead, orange-sari woman, violet-headphone youth, green-coat elder, burgundy-workwear woman, yellow-parka man. Row 3: mauve-jumpsuit woman, tan-vest fisherman, red/white-tracksuit youth, cobalt-blazer woman, rust-poncho woman, olive-cargo man, black-coat woman, aqua-polo man. Row 4: lavender-shawl elder, maroon-waistcoat man, denim-jacket/red-boots woman, orange-scarf gray-suit elder, white-sweater/purple-skirt woman, red-checked-shirt man, peach-jacket woman, blue-cardigan elder. No hero costumes, gold/white capes, cyan technology coats, woodland armor, flaming fists, text or logos.
+
+Student prompt brief: eight individually distinct young adults in a strict 4×2 transparent full-body grid, painted HD 2D comic/JRPG style. Red-varsity-jacket man with twists; lilac-sweater woman with twin buns and books; orange-hoodie/overalls curly-haired man; teal-vest freckled redheaded woman; coral-tunic woman with ponytail; brown-blazer bespectacled man with mustard scarf; plum-tracksuit shaved-hair woman with headphones; pale-blue-bomber bearded man with maroon trousers. No heroic costumes, companion outfits, backgrounds, text or logos.
+
 ## HD monster integration
 
 The built-in image tool generated `assets/sentinel-hd.png`, `assets/cast-hd.png` and `assets/bestiary-hd.png`. These are painted 2D illustrations with transparent alpha, not 3D models or skeletal animations. Runtime crops the atlases without altering their pixels, adding movement, impact flashes and health bars. Map emblems distinguish robots, stags, hounds, mantises, volcanic creatures, tree regents and ice hosts.
