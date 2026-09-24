@@ -1,7 +1,7 @@
 import {mkdir,copyFile,readFile,writeFile} from 'node:fs/promises';
 const root = new URL('.', import.meta.url);
 const output = new URL('dist/', root);
-const files=['index.html','odyssey.css','config.js','cesar-save.js','gift-roster.js','core.js','equipment.js','world-data.js','art.js','city-hd.js','battle-hd.js','crowd-hd.js','campaign-data.js','progression.js','rpg-items.js','rpg-story.js','quest-expansion.js','adventure.js'];
+const files=['index.html','odyssey.css','config.js','cesar-save.js','gift-roster.js','core.js','equipment.js','world-data.js','art.js','city-hd.js','battle-hd.js','crowd-hd.js','vampire-expansion.js','campaign-data.js','progression.js','rpg-items.js','rpg-story.js','quest-expansion.js','adventure.js'];
 const fixture=await readFile(new URL('cesar-save.js',root),'utf8');
 if(!/^\s*(?:\/\/[^\n]*\n)*window\.CESAR_FIXTURE\s*=\s*null;?\s*$/.test(fixture))throw Error('Public builds must not contain a personal save.');
 await mkdir(new URL('assets/',output),{recursive:true});
@@ -9,7 +9,7 @@ for(const file of files)await copyFile(new URL(file,root),new URL(file,output));
 await copyFile(new URL('ashford.png',root),new URL('assets/ashford.png',output));
 await writeFile(new URL('404.html',output),'<!doctype html><title>Mutant Odyssey</title><p>This page is not available. <a href="/">Return to Mutant Odyssey</a>.</p>');
 await copyFile(new URL('ashford-hd.png',root),new URL('assets/ashford-hd.png',output));
-const monsterAssets=['sentinel-hd.png','cast-hd.png','bestiary-hd.png','civilians-hd.png','students-hd.png'];
+const monsterAssets=['sentinel-hd.png','cast-hd.png','bestiary-hd.png','civilians-hd.png','students-hd.png','new-orleans-hd.png','vampire-covenants-hd.png'];
 for(const name of monsterAssets)await copyFile(new URL(name,root),new URL('assets/'+name,output));
 const production=new URL('.vercel/output/',root),statics=new URL('static/',production);
 await mkdir(new URL('assets/',statics),{recursive:true});
